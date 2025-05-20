@@ -1,112 +1,109 @@
 #include <stdio.h>
-#define max 25
 
-void firstFit(int b[], int nb, int f[], int nf);
-void worstFit(int b[], int nb, int f[], int nf);
-void bestFit(int b[], int nb, int f[], int nf);
-
-int main() {
-    int b[max], f[max], nb, nf;
-    printf("Memory Management Schemes\n");
-    printf("\nEnter the number of blocks: ");
-    scanf("%d", &nb);
-    printf("Enter the number of files: ");
-    scanf("%d", &nf);
-
-    printf("\nEnter the size of the blocks:\n");
-    for (int i = 1; i <= nb; i++) {
-        printf("Block %d: ", i);
-        scanf("%d", &b[i]);
+#define MAX 10
+void print(char *name, int alloc[], int n) {
+    printf("\n%s Allocation:\n", name);
+    for (int i = 0; i < n; i++) {
+        if (alloc[i] == -1)
+            printf("Process %d -> Not Allocated\n", i + 1);
+        else
+            printf("Process %d -> Block %d\n", i + 1, alloc[i] + 1);
     }
-
-    printf("\nEnter the size of the files:\n");
-    for (int i = 1; i <= nf; i++) {
-        printf("File %d: ", i);
-        scanf("%d", &f[i]);
-    }
-
-    printf("\nMemory Management Scheme - First Fit");
-    firstFit(b, nb, f, nf);
-
-    printf("\n\nMemory Management Scheme - Worst Fit");
-    worstFit(b, nb, f, nf);
-
-    printf("\n\nMemory Management Scheme - Best Fit");
-    bestFit(b, nb, f, nf);
-
-    return 0;
 }
 
-void firstFit(int b[], int nb, int f[], int nf) {
-    int bf[max] = {0};
-    int ff[max] = {0};
-    int frag[max], i, j;
-
-    for (i = 1; i <= nf; i++) {
-        for (j = 1; j <= nb; j++) {
-            if (bf[j] != 1 && b[j] >= f[i]) {
-                ff[i] = j;
-                bf[j] = 1;
-                frag[i] = b[j] - f[i];
+void firstFit(int blocks[], int m, int procs[], int n) {
+    int alloc[MAX], b[MAX];
+    for (int i = 0; i < m; i++) b[i] = blocks[i];
+    for (int i = 0; i < n; i++) {
+        alloc[i] = -1;
+        for (int j = 0; j < m; j++) {
+            if (b[j] >= procs[i]) {
+                alloc[i] = j;
+                b[j] = -1;  
                 break;
             }
         }
     }
-
-    printf("\nFile_no:\tFile_size:\tBlock_no:\tBlock_size:\tFragment");
-    for (i = 1; i <= nf; i++) {
-        printf("\n%d\t\t%d\t\t%d\t\t%d\t\t%d", i, f[i], ff[i], b[ff[i]], frag[i]);
-    }
+    print("First Fit", alloc, n);
 }
-
-void worstFit(int b[], int nb, int f[], int nf) {
-    int bf[max] = {0};
-    int ff[max] = {0};
-    int frag[max], i, j, temp, highest = 0;
-
-    for (i = 1; i <= nf; i++) {
-        for (j = 1; j <= nb; j++) {
-            if (bf[j] != 1) {
-                temp = b[j] - f[i];
-                if (temp >= 0 && highest < temp) {
-                    ff[i] = j;
-                    highest = temp;
-                }
-            }
+void bestFit(int blocks[], int m, int procs[], int n) {
+    int alloc[MAX], b[MAX];
+    for (int i = 0; i < m; i++) b[i] = blocks[i];
+    for (int i = 0; i < n; i++) {
+        alloc[i] = -1;
+        int best = -1;
+        for (int j = 0; j < m; j++) {
+            if (b[j] >= procs[i] && (best == -1 || b[j] < b[best]))
+                best = j;
         }
-        frag[i] = highest;
-        bf[ff[i]] = 1;
-        highest = 0;
-    }
-
-    printf("\nFile_no:\tFile_size:\tBlock_no:\tBlock_size:\tFragment");
-    for (i = 1; i <= nf; i++) {
-        printf("\n%d\t\t%d\t\t%d\t\t%d\t\t%d", i, f[i], ff[i], b[ff[i]], frag[i]);
-    }
-}
-
-void bestFit(int b[], int nb, int f[], int nf) {
-    int bf[max] = {0};
-    int ff[max] = {0};
-    int frag[max], i, j, temp, lowest = 10000;
-
-    for (i = 1; i <= nf; i++) {
-        for (j = 1; j <= nb; j++) {
-            if (bf[j] != 1) {
-                temp = b[j] - f[i];
-                if (temp >= 0 && lowest > temp) {
-                    ff[i] = j;
-                    lowest = temp;
-                }
-            }
+        if (best != -1) {
+            alloc[i] = best;
+            b[best] = -1;  
         }
-        frag[i] = lowest;
-        bf[ff[i]] = 1;
-        lowest = 10000;
     }
-
-    printf("\nFile_no:\tFile_size:\tBlock_no:\tBlock_size:\tFragment");
-    for (i = 1; i <= nf && ff[i] != 0; i++) {
-        printf("\n%d\t\t%d\t\t%d\t\t%d\t\t%d", i, f[i], ff[i], b[ff[i]], frag[i]);
-    }
+    print("Best Fit", alloc, n);
 }
+void worstFit(int blocks[], int m, int procs[], int n) {
+    int alloc[MAX], b[MAX];
+    for (int i = 0; i < m; i++) b[i] = blocks[i];
+    for (int i = 0; i < n; i++) {
+        alloc[i] = -1;
+        int worst = -1;
+        for (int j = 0; j < m; j++) {
+            if (b[j] >= procs[i] && (worst == -1 || b[j] > b[worst]))
+                worst = j;
+        }
+        if (worst != -1) {
+            alloc[i] = worst;
+            b[worst] = -1;  
+        }
+    }
+    print("Worst Fit", alloc, n);
+}
+
+int main() {
+    int blocks[MAX], procs[MAX], m, n;
+
+    printf("Enter number of memory blocks: ");
+    scanf("%d", &m);
+    printf("Enter block sizes:\n");
+    for (int i = 0; i < m; i++) scanf("%d", &blocks[i]);
+
+    printf("Enter number of processes: ");
+    scanf("%d", &n);
+    printf("Enter process sizes:\n");
+    for (int i = 0; i < n; i++) scanf("%d", &procs[i]);
+
+    firstFit(blocks, m, procs, n);
+    bestFit(blocks, m, procs, n);
+    worstFit(blocks, m, procs, n);
+
+    return 0;
+}
+
+Output:
+Enter number of memory blocks: 5
+Enter block sizes:
+150 250 350 450 550 
+Enter number of processes: 4
+Enter process sizes:
+200 300 400 500
+
+First Fit Allocation:
+Process 1 -> Block 2
+Process 2 -> Block 3
+Process 3 -> Block 4
+Process 4 -> Block 5
+
+Best Fit Allocation:
+Process 1 -> Block 2
+Process 2 -> Block 3
+Process 3 -> Block 4
+Process 4 -> Block 5
+
+Worst Fit Allocation:
+Process 1 -> Block 5
+Process 2 -> Block 4
+Process 3 -> Not Allocated
+Process 4 -> Not Allocated
+
