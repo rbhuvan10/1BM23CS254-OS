@@ -71,3 +71,69 @@ int main() {
 
     return 0;
 }
+
+Output:
+Enter the number of processes: 3
+Enter the CPU burst times:
+2 3 1
+Enter the time periods:
+6 8 12
+Enter the deadlines:
+5 7 10
+
+Earliest Deadline Scheduling:
+PID     Burst   Deadline        Period
+1       2       5               6
+2       3       7               8
+3       1       10              12
+
+0ms : Task 1 is running.
+1ms : Task 1 is running.
+2ms : Task 2 is running.
+3ms : Task 2 is running.
+4ms : Task 2 is running.
+5ms : Task 1 is running.
+6ms : Task 1 is running.
+7ms : Task 3 is running.
+8ms : Task 2 is running.
+9ms : Task 2 is running.
+10ms : Task 2 is running.
+11ms : Task 1 is running.
+12ms : Task 1 is running.
+13ms : Task 3 is running.
+14ms : Task 2 is running.
+15ms : Task 2 is running.
+16ms : Task 2 is running.
+17ms : Task 1 is running.
+18ms : Task 1 is running.
+19ms : Task 3 is running.
+20ms : Task 2 is running.
+21ms : Task 2 is running.
+22ms : Task 2 is running.
+23ms : Task 1 is running.
+24ms : Task 1 is running.
+25ms : Task 3 is running.
+26ms : Task 2 is running.
+27ms : Task 2 is running.
+28ms : Task 2 is running.
+29ms : Task 1 is running.
+30ms : Task 1 is running.
+31ms : Task 3 is running.
+32ms : Task 2 is running.
+33ms : Task 2 is running.
+34ms : Task 2 is running.
+35ms : Task 1 is running.
+36ms : Task 1 is running.
+37ms : Task 3 is running.
+38ms : Task 2 is running.
+39ms : Task 2 is running.
+40ms : Task 2 is running.
+41ms : Task 1 is running.
+42ms : Task 1 is running.
+43ms : Task 3 is running.
+44ms : Task 2 is running.
+45ms : Task 2 is running.
+46ms : Task 2 is running.
+47ms : Task 1 is running.
+48ms : Task 1 is running.
+49ms : Task 3 is running.
